@@ -1,0 +1,12 @@
+secret_code = "4729"
+
+print("🔐 Guess the 4-digit code!")
+
+while True:
+    guess = input("Enter code: ")
+
+    if guess == secret_code:
+        print("✅ Correct! You unlocked it.")
+        break
+    else:
+        print("❌ Wrong code. Try again.")
