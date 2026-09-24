@@ -1,0 +1,90 @@
+from collections import deque
+
+def is_valid(m, c, total_m, total_c):
+    # Values must be valid
+    if m < 0 or c < 0 or m > total_m or c > total_c:
+        return False
+
+    # Left side condition
+    if m > 0 and m < c:
+        return False
+
+    # Right side condition
+    mr = total_m - m
+    cr = total_c - c
+
+    if mr > 0 and mr < cr:
+        return False
+
+    return True
+
+
+def solve_missionaries_cannibals(total_m, total_c, boat_capacity):
+
+    start = (total_m, total_c, 0)
+    goal = (0, 0, 1)
+
+    queue = deque()
+    queue.append((start, [start]))
+
+    visited = {start}
+
+    # Generate all possible boat movements
+    moves = []
+
+    for m in range(boat_capacity + 1):
+        for c in range(boat_capacity + 1):
+            if 1 <= m + c <= boat_capacity:
+                moves.append((m, c))
+
+    while queue:
+
+        state, path = queue.popleft()
+        m, c, boat = state
+
+        if state == goal:
+            print("\nSolution Found!\n")
+
+            for i, step in enumerate(path):
+                side = "Left" if step[2] == 0 else "Right"
+                print(f"Step {i}: Missionaries={step[0]}, "
+                      f"Cannibals={step[1]}, Boat={side}")
+
+            return
+
+        for dm, dc in moves:
+
+            if boat == 0:
+                # Boat moves Left -> Right
+                new_state = (m - dm, c - dc, 1)
+
+            else:
+                # Boat moves Right -> Left
+                new_state = (m + dm, c + dc, 0)
+
+            if is_valid(new_state[0], new_state[1],
+                        total_m, total_c):
+
+                if new_state not in visited:
+                    visited.add(new_state)
+
+                    queue.append(
+                        (new_state, path + [new_state])
+                    )
+
+    print("\nNo solution found.")
+
+
+# ---------------- USER INPUT ----------------
+
+print("MISSIONARIES AND CANNIBALS PROBLEM")
+
+total_m = int(input("Enter number of Missionaries: "))
+total_c = int(input("Enter number of Cannibals: "))
+boat_capacity = int(input("Enter boat capacity: "))
+
+solve_missionaries_cannibals(
+    total_m,
+    total_c,
+    boat_capacity
+)
